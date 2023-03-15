@@ -1394,100 +1394,97 @@ if (hx710_phase==0) //была фаза давления
 u16 LightOnMoment, FanOnMoment, CheckOnMoment;
 
 if (CorrConf[0]->WorkMode & 1) //режим "шлюз"
- {
- VentConf->fan_on=0; //выкл регулятора
+    {
+    VentConf->fan_on=0; //выкл регулятора
 
- switch (GateWayState)
-  {
-  case 0: //ждём открытия любой двери
-   	  TIM3->CCR3=0;       //выкл вентилятора
-	  CorrConf[0]->power=0;
-	  VentConf->fan_power=0;
-   	  VentConf->UV_on=0; //выкл УФ
+    switch (GateWayState)
+        {
+        case 0: //ждём открытия любой двери
+   	        TIM3->CCR3=0;       //выкл вентилятора
+	        CorrConf[0]->power=0;
+	  		VentConf->fan_power=0;
+   	  		VentConf->UV_on=0; //выкл УФ
+			CorrConf[0]->PCA9534_1 &= ~0xf0; //разблокировка дверей,  выкл светофор, выкл пищалки
 
-	  CorrConf[0]->PCA9534_1 &= ~0xf0; //разблокировка дверей,  выкл светофор, выкл пищалки
+	 		if (SecondCounter-LightOnMoment>CorrConf[0]->LightTime)	  VentConf->LightOn=0; //выкл свет
 
-	 if (SecondCounter-LightOnMoment>CorrConf[0]->LightTime)	  VentConf->LightOn=0; //выкл свет
-
-	  if (CorrConf[0]->PCA9534_0 & 1) //открыта дверь 1 (грязная)
-	    {
-		GateWayState=1;
-		CorrConf[0]->PCA9534_1 |= 0x70; //блокировка противоположной двери и вкл светофор, пищалка
-		VentConf->LightOn=1; //вкл свет
-	    };
-
-	  if (CorrConf[0]->PCA9534_0 & 2) //открыта дверь 2 (чистая)
-	    {
-		GateWayState=2;
-		CorrConf[0]->PCA9534_1 |= 0xb0; //блокировка противоположной двери, вкл светофор, пищалка
-		VentConf->LightOn=1; //вкл свет
-	    };
-	  break;
-  case 1: //ждём закрытия двери 1
-	  if ((CorrConf[0]->PCA9534_0 & 3)==0) //обе двери закрыты
-	    {
-		  CorrConf[0]->PCA9534_1 &= ~0x10; // выкл пищалки
-		  TIM3->CCR3=0xffff;       //вкл вентилятора на максимум
-		  CorrConf[0]->power=0xffff;
-	          VentConf->fan_power=10000;
-		  FanOnMoment=SecondCounter; //взводим таймер выключения вентилятора
-	      VentConf->UV_on=1; //вкл УФ
-			GateWayState=3;
-		  CheckOnMoment =SecondCounter; // взводим таймер проверки фильтра
-	    }
-	  break;
-  case 2: //ждём закрытия двери 2
-
-	  if ((CorrConf[0]->PCA9534_0 & 3)==0) //обе двери закрыты
-	    {
-		if (CorrConf[0]->WorkMode & 2)  //двусторонний шлюз
-		  {
-		  TIM3->CCR3=0xffff;       //вкл вентилятора на максимум
-		  CorrConf[0]->power=0xffff;
-	          VentConf->fan_power=10000;
-
-		  FanOnMoment=SecondCounter; //взводим таймер выключения вентилятора
-		  VentConf->UV_on=1; //вкл УФ
-			GateWayState=3;
-		  CheckOnMoment =SecondCounter; // взводим таймер проверки фильтра
-	      }
-		else
-		  {
-			GateWayState=4;
-		  }
-	    }
-	  break;
-  case 3:  //ждём окончания цикла обработки
+	  		if (CorrConf[0]->PCA9534_0 & 1) //открыта дверь 1 (грязная)
+	    		{
+				GateWayState=1;
+				CorrConf[0]->PCA9534_1 |= 0x70; //блокировка противоположной двери и вкл светофор, пищалка
+				VentConf->LightOn=1; //вкл свет
+	    		};
+	  		if (CorrConf[0]->PCA9534_0 & 2) //открыта дверь 2 (чистая)
+	    		{
+				GateWayState=2;
+				CorrConf[0]->PCA9534_1 |= 0xb0; //блокировка противоположной двери, вкл светофор, пищалка
+				VentConf->LightOn=1; //вкл свет
+	    		};
+	  	break;
+  
+  		case 1: //ждём закрытия двери 1
+	  		if ((CorrConf[0]->PCA9534_0 & 3)==0) //обе двери закрыты
+	    		{
+		  		CorrConf[0]->PCA9534_1 &= ~0x10; // выкл пищалки
+		  		TIM3->CCR3=0xffff;       //вкл вентилятора на максимум
+		  		CorrConf[0]->power=0xffff;
+	          	VentConf->fan_power=10000;
+		  		FanOnMoment=SecondCounter; //взводим таймер выключения вентилятора
+	      		VentConf->UV_on=1; //вкл УФ
+				GateWayState=3;
+		  		CheckOnMoment =SecondCounter; // взводим таймер проверки фильтра
+	    		};
+	  	break;
+  ``case 2: //ждём закрытия двери 2
+	    if ((CorrConf[0]->PCA9534_0 & 3)==0) //обе двери закрыты
+	    	{
+			if (CorrConf[0]->WorkMode & 2)  //двусторонний шлюз
+		  		{
+		  		TIM3->CCR3=0xffff;       //вкл вентилятора на максимум
+		  		CorrConf[0]->power=0xffff;
+	          	VentConf->fan_power=10000;
+				FanOnMoment=SecondCounter; //взводим таймер выключения вентилятора
+		  		VentConf->UV_on=1; //вкл УФ
+				GateWayState=3;
+		  		CheckOnMoment =SecondCounter; // взводим таймер проверки фильтра
+	      		}
+			else
+		  		{
+				GateWayState=4;
+		  		}
+	    	}
+	break;
+  	case 3:  //ждём окончания цикла обработки
 		CorrConf[0]->PCA9534_1 |= 0xc0; //блокировка двух дверей
 		if (SecondCounter-CheckOnMoment > CorrConf[0]->CheckTime)
-		       {
+		    {
 			// Проверка давления на фильтре
-			   if (VentConf->min_pres > CorrConf[0]->press_i2c )
-			      {
-				    VentConf->filter_alarm = 2;
-				    GateWayState=4; // переходим в начальное состояние
-				    break;
-			      }
-			   else {
-				  VentConf->filter_alarm = 0;
-			      }
-		       }
-	  //мигаем светофором
-	  if (mSecondCounter>500) CorrConf[0]->PCA9534_1 &= ~0x20; //выкл светофор
-	  else  CorrConf[0]->PCA9534_1 |= 0x20; //вкл светофор
+			if (VentConf->min_pres > CorrConf[0]->press_i2c )
+			    {
+			    VentConf->filter_alarm = 2;
+			    GateWayState=4; // переходим в начальное состояние
+			    break;
+			    }
+			else 
+				{
+				VentConf->filter_alarm = 0;
+			    }
+		    }
+	  	//мигаем светофором
+	  	if (mSecondCounter>500) CorrConf[0]->PCA9534_1 &= ~0x20; //выкл светофор
+	  	else  CorrConf[0]->PCA9534_1 |= 0x20; //вкл светофор
 
-	  if (SecondCounter-FanOnMoment > CorrConf[0]->BlowTime)
-         {
-		GateWayState=4;
-	  }
-		  
-	  break;
+	  	if (SecondCounter-FanOnMoment > CorrConf[0]->BlowTime)
+        	{
+			GateWayState=4;
+	  		}
+	break;
 
-  default:
-	  LightOnMoment = SecondCounter; //взводим световой таймер
+  	default:
+		LightOnMoment = SecondCounter; //взводим световой таймер
 		GateWayState=0;
-	  break;
-  }
+	break;
+  	}
  }
 
 
