@@ -1098,14 +1098,16 @@ integrator=0;
         VentConf->flaw_set1 = 500;  //уставка потока 2
         VentConf->min_pres = 60; //нижнее давление для определения аварии фильтра
         VentConf->max_pres = 350; //верхнее давление для определения аварии фильтра
-        VentConf->Version = 300; //Номер версии прошивки
+        VentConf->Version = 401; //Номер версии прошивки
+	CorrConf[0]->FFMnumber=1; //количество ФВМ
+        CorrConf[0]->InFanPower=1000; // мощность мотора
 
         VentConf->fan_on=0;
 //        VentConf->UVSecondCounter=BKP_ReadBackupRegister(BKP_DR1); //наработку в секундах берём из бакап-озу (на батарейке)
         CorrConf[0]->PCA9534_3 =0xf0; //старший полубайт PCA9534 на выход
-        CorrConf[0]->LightTime =10;
-        CorrConf[0]->BlowTime =10;
-        CorrConf[0]->CheckTime =3;
+        CorrConf[0]->LightTime =20; //Время освещения
+        CorrConf[0]->BlowTime =30;  // Время обработки
+        CorrConf[0]->CheckTime =3;  // Время до проверки
 
      FlashFill();
      BKPFill();
