@@ -97,6 +97,7 @@ struct vent_conf_t
   u16     Version;           //5B
   u16     HX711_temper;      //5C
   u16     HX711_press;       //5D
+  u16     debug;             //5e debug  
   };
 
 //--- интерфейсная структура -- для обмена по модбасу ---------
