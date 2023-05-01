@@ -1098,16 +1098,14 @@ integrator=0;
         VentConf->flaw_set1 = 500;  //уставка потока 2
         VentConf->min_pres = 60; //нижнее давление для определения аварии фильтра
         VentConf->max_pres = 350; //верхнее давление для определения аварии фильтра
-        VentConf->Version = 401; //Номер версии прошивки
-	CorrConf[0]->FFMnumber=1; //количество ФВМ
-        CorrConf[0]->InFanPower=1000; // мощность мотора
+        VentConf->Version = 300; //Номер версии прошивки
 
         VentConf->fan_on=0;
 //        VentConf->UVSecondCounter=BKP_ReadBackupRegister(BKP_DR1); //наработку в секундах берём из бакап-озу (на батарейке)
         CorrConf[0]->PCA9534_3 =0xf0; //старший полубайт PCA9534 на выход
-        CorrConf[0]->LightTime =20; //Время освещения
-        CorrConf[0]->BlowTime =30;  // Время обработки
-        CorrConf[0]->CheckTime =3;  // Время до проверки
+        CorrConf[0]->LightTime =10;
+        CorrConf[0]->BlowTime =10;
+        CorrConf[0]->CheckTime =3;
 
      FlashFill();
      BKPFill();
@@ -1299,14 +1297,7 @@ integrator=0;
 //		  CorrConf[1]->filter = ((CorrConf[1]->filter*19)+  ( press32 + CorrConf[1]->tcomp_offset ) * (100+CorrConf[1]->kf_press)/100 + CorrConf[1]->tcomp_diap)/20;
 	 //	  CorrConf[1]->filter =   (( press32 + CorrConf[1]->tcomp_offset ) * (100+CorrConf[1]->kf_press)/100 + CorrConf[1]->tcomp_diap);
 
-   if ((CorrConf[0]->WorkMode & 1)==0) //режим "шлюз" выключен
-   {
 	  CorrConf[1]->press_i2c=CorrConf[1]->filter*10/16;
-   }
-   else
-   {
-		  CorrConf[0]->press_i2c=CorrConf[1]->filter*10/16;
-   }
 
 	  //	 dev_conf[1].devConfig[0x11]=CorrConf[1]->press_i2c;
 //	  CorrConf[1]->press_i2c/=2;
